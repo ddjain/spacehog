@@ -1,17 +1,48 @@
-# spacehog
+# 🐷 spacehog
 
 [![ShellCheck](https://github.com/ddjain/spacehog/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/ddjain/spacehog/actions/workflows/shellcheck.yml)
 
-Find what's hogging your disk space on macOS/Linux — read-only, zero deletes.
+> **Your disk isn't full. Your caches are. Find out what's eating it.**
 
-`spacehog` surveys the usual suspects (package manager caches, ML model
-caches, browser caches, `node_modules`, Docker, Xcode) and prints them
-sorted largest-first, so you know exactly what to clean up and how much
-you'll get back.
+Your Mac says you have **30 GB left**. Storage Settings says
+**"System Data: 180 GB."** But what exactly is using that space?
+
+`spacehog` finds out — a lightweight, read-only disk space analyzer for
+developers. It digs into the places modern dev environments quietly
+accumulate hundreds of gigabytes: Docker images and build caches,
+`node_modules`, package managers, ML models, Xcode data, language caches,
+downloads, and more — then prints them sorted largest-first.
+
+## Why spacehog?
+
+Modern development machines accumulate a surprising amount of data:
+
+```text
+Docker images          85 GB
+Docker build cache     42 GB
+node_modules           31 GB
+Hugging Face models    28 GB
+Xcode DerivedData      17 GB
+Homebrew caches         8 GB
+Downloads               6 GB
+────────────────────────────
+Total                 217 GB
+```
+
+That's 217 GB of potentially reclaimable developer data hiding across your
+machine. `spacehog` brings it together in one place.
+
+## Read-only by design
+
+It doesn't clean your machine. It doesn't delete anything. It doesn't
+modify your files. It doesn't require `sudo`. It doesn't send your data
+anywhere. It simply looks, measures, and reports.
+
+> **spacehog tells you what is eating your disk. You decide what to feed it.**
 
 ## Is it safe to run?
 
-Yes, but don't take our word for it — check for yourself, it's one file:
+Don't take our word for it — check for yourself, it's one file:
 
 - **No `sudo`, ever.** The script never elevates privileges.
 - **No network calls.** It doesn't phone home or fetch anything.
@@ -59,6 +90,18 @@ chmod +x spacehog.sh
 ./spacehog.sh
 ```
 
+### Show only the biggest offenders
+
+```sh
+./spacehog.sh --top 10
+```
+
+### Customize the node_modules search
+
+```sh
+./spacehog.sh --node-modules-root ~/projects
+```
+
 ## Options
 
 ```
@@ -72,18 +115,26 @@ Usage: spacehog.sh [options]
 
 ## What it checks
 
-- Overall volume usage (`df -h /`)
-- `~/Library/Caches`, `~/.cache`, `~/Downloads`, `~/.Trash`
-- Package manager caches: uv, pip, npm, Yarn, Homebrew, go-build, node-gyp,
-  pyright, Playwright, Cargo, Gradle, Maven
-- ML model caches: Hugging Face, Whisper, Torch, Ollama, LM Studio
-- Docker (`docker system df`, or the Docker.app VM disk if the daemon isn't
-  running)
-- `node_modules` directories anywhere under your home directory
-- Xcode DerivedData/Archives and CoreSimulator caches
+- 🐳 **Docker** — images, containers, volumes & build cache
+- 📦 **Node.js** — `node_modules`, npm, Yarn caches
+- 🐍 **Python** — pip, uv caches
+- 🦀 **Rust** — Cargo registry
+- ☕ **Java** — Maven & Gradle caches
+- 🤖 **AI / ML** — Hugging Face, Ollama, PyTorch, Whisper, LM Studio
+- 🍎 **Xcode** — DerivedData, Archives & CoreSimulator
+- 🍺 **Homebrew** — downloaded packages & caches
+- 🎭 **Playwright** — browser binaries
+- 📥 **Downloads** & 🗑️ **Trash**
+- 🧰 Other developer caches & build artifacts (go-build, node-gyp, pyright)
 
 macOS-only sections are automatically skipped (with a note) when run on
 Linux.
+
+## Contributing
+
+Found another developer tool that secretly eats 50 GB? Add it to spacehog.
+Contributions are welcome — especially detectors for developer tools,
+package managers, build systems, and AI/ML frameworks.
 
 ## License
 
