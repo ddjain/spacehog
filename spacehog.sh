@@ -97,7 +97,7 @@ if $IS_MACOS; then
 section "Individual items in ~/Library/Caches (top $TOP_N)"
 du -sh "$HOME/Library/Caches"/* 2>/dev/null | sort -rh | head -n "$TOP_N"
 else
-section "~/Library/Caches (macOS only — skipped)"
+section "\$HOME/Library/Caches (macOS only — skipped)"
 fi
 
 section "Individual items in ~/.cache (top $TOP_N)"
@@ -118,7 +118,7 @@ fi
 
 section "node_modules under $SCAN_ROOT (top $TOP_N, excludes nested ones, depth $NODE_MODULES_DEPTH)"
 find "$SCAN_ROOT" -maxdepth "$NODE_MODULES_DEPTH" -name node_modules -type d \
-  -not -path "*/node_modules/*/node_modules*" 2>/dev/null \
+  -not -path "*/node_modules/*/node_modules*" \
   -exec du -sh {} \; 2>/dev/null | sort -rh | head -n "$TOP_N"
 
 if $IS_MACOS; then
